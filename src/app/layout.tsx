@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+import Navbar from "@/components/shared/Navbar";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
-  title: "StudioSpace | Creative Workspaces",
-  description: "Peer-to-Peer Creative Workspace & Production Studio Sharing Platform",
+  title: "StudioSpace | Peer-to-Peer Creative Workspace",
+  description: "Reserve production spaces built for visionary creators.",
 };
 
 export default function RootLayout({
@@ -13,8 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="dark">
-      <body className="antialiased min-h-screen flex flex-col">
+      <body className={inter.className}>
+        <Navbar />
         {children}
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );
