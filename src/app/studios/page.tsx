@@ -64,7 +64,7 @@ export default function ExploreStudios() {
       hourlyRate: 75,
       rating: 4.6,
       location: "Atlanta, GA",
-      image: "https://images.unsplash.com/photo-1516280440502-39c43729e2f0?q=80&w=800&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop",
       isSaved: false
     }
   ]);
@@ -104,7 +104,7 @@ export default function ExploreStudios() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {studios.map((studio) => (
-            <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300 hover:border-warning/50 transition-all duration-300 flex flex-col h-full group">
+            <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300 hover:border-warning transition-all duration-300 flex flex-col h-full group">
               <figure className="relative h-60 w-full overflow-hidden">
                 <img 
                   src={studio.image} 
@@ -142,7 +142,7 @@ export default function ExploreStudios() {
                   </div>
                   
                   <div className="card-actions">
-                    <Link href={`/studios/${studio._id}`} className="btn btn-warning px-6">
+                    <Link href={`/studios/${studio._id}`} className="btn btn-warning px-6 font-bold">
                       View Details
                     </Link>
                   </div>

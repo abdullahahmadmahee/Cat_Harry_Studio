@@ -1,0 +1,2040 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+public/
+  file.svg
+  globe.svg
+  next.svg
+  vercel.svg
+  window.svg
+src/
+  app/
+    add-studio/
+      page.tsx
+    login/
+      page.tsx
+    my-bookings/
+      page.tsx
+    my-listings/
+      page.tsx
+    register/
+      page.tsx
+    studios/
+      [id]/
+        page.tsx
+      edit/
+        [id]/
+          page.tsx
+      page.tsx
+    favicon.ico
+    globals.css
+    layout.tsx
+    loading.tsx
+    not-found.tsx
+    page.tsx
+  components/
+    home/
+      BrowseCategories.tsx
+      HeroBanner.tsx
+      HostGuarantee.tsx
+      HowItWorks.tsx
+    shared/
+      EmptyState.tsx
+      Footer.tsx
+      Navbar.tsx
+.gitignore
+eslint.config.mjs
+next.config.ts
+package.json
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/app/my-bookings/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { CalendarDays, Clock, MapPin, Download } from "lucide-react";
+import toast from "react-hot-toast";
+import EmptyState from "@/components/shared/EmptyState";
+
+export default function MyBookings() {
+  const [bookings, setBookings] = useState([
+    {
+      _id: "b1",
+      studioTitle: "Neon Vault 4K Cinema Soundstage",
+      location: "Downtown Los Angeles, CA",
+      date: "2026-11-15",
+      time: "10:00 AM - 02:00 PM",
+      totalPrice: 540,
+      status: "Pending",
+      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      _id: "b2",
+      studioTitle: "The Prism Cyc & Photo Studio",
+      location: "Brooklyn, NY",
+      date: "2026-10-20",
+      time: "01:00 PM - 05:00 PM",
+      totalPrice: 380,
+      status: "Confirmed",
+      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400&auto=format&fit=crop"
+    }
+  ]);
+
+  const handleCancel = (id: string) => {
+    setBookings(bookings.map(b => b._id === id ? { ...b, status: "Cancelled" } : b));
+    toast.success("Booking cancelled successfully.");
+  };
+
+  const getStatusColor = (status: string) => {
+    if (status === "Pending") return "badge-warning";
+    if (status === "Confirmed") return "badge-success";
+    if (status === "Completed") return "badge-info";
+    return "badge-error";
+  };
+
+  return (
+    <main className="min-h-[80vh] bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold text-white mb-8">My Bookings</h1>
+
+        {bookings.length === 0 ? (
+          <EmptyState 
+            title="No Bookings Found" 
+            subtitle="You haven't reserved any workspaces yet."
+            buttonText="Explore Studios"
+            buttonLink="/studios"
+          />
+        ) : (
+          <div className="space-y-6">
+            {bookings.map(booking => (
+              <div key={booking._id} className="card md:card-side bg-base-200 border border-base-300 shadow-xl overflow-hidden">
+                <figure className="md:w-64 shrink-0">
+                  <img src={booking.image} alt={booking.studioTitle} className="w-full h-full object-cover" />
+                </figure>
+                <div className="card-body p-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h2 className="card-title text-xl text-white">{booking.studioTitle}</h2>
+                      <div className="flex items-center gap-2 text-gray-400 text-sm mt-1">
+                        <MapPin className="w-4 h-4" /> {booking.location}
+                      </div>
+                    </div>
+                    <span className={`badge ${getStatusColor(booking.status)} p-3 font-semibold uppercase text-xs`}>
+                      {booking.status}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-4">
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <CalendarDays className="w-5 h-5 text-warning" />
+                      <span>{booking.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Clock className="w-5 h-5 text-warning" />
+                      <span>{booking.time}</span>
+                    </div>
+                    <div className="text-lg font-bold text-white sm:ml-auto border-t sm:border-t-0 sm:border-l border-base-300 pt-2 sm:pt-0 sm:pl-4">
+                      Total: ${booking.totalPrice}
+                    </div>
+                  </div>
+
+                  <div className="card-actions justify-end mt-4 pt-4 border-t border-base-300">
+                    {booking.status === "Confirmed" && (
+                      <button className="btn btn-sm btn-outline btn-info gap-2">
+                        <Download className="w-4 h-4" /> Download PDF Invoice
+                      </button>
+                    )}
+                    {booking.status === "Pending" && (
+                      <button onClick={() => handleCancel(booking._id)} className="btn btn-sm btn-outline btn-error">
+                        Cancel Booking
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/my-listings/page.tsx">
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Edit, Trash2, MapPin } from "lucide-react";
+import toast from "react-hot-toast";
+import EmptyState from "@/components/shared/EmptyState";
+
+export default function MyListings() {
+  const [listings, setListings] = useState([
+    {
+      _id: "1",
+      title: "Neon Vault 4K Cinema Soundstage",
+      category: "Film Stage",
+      hourlyRate: 135,
+      location: "Downtown Los Angeles, CA",
+      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop"
+    }
+  ]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const confirmDelete = () => {
+    setListings(listings.filter(item => item._id !== deleteId));
+    setDeleteId(null);
+    toast.success("Studio deleted successfully!");
+  };
+
+  return (
+    <main className="min-h-[80vh] bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-white">My Studio Listings</h1>
+          <Link href="/add-studio" className="btn btn-warning">Add New</Link>
+        </div>
+
+        {listings.length === 0 ? (
+          <EmptyState 
+            title="No Studios Listed" 
+            subtitle="You haven't listed any creative workspaces yet. Start hosting to earn!"
+            buttonText="Add New Studio"
+            buttonLink="/add-studio"
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {listings.map(studio => (
+              <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300">
+                <figure className="h-48 relative">
+                  <img src={studio.image} alt={studio.title} className="w-full h-full object-cover" />
+                  <div className="absolute top-2 left-2">
+                    <span className="badge badge-warning">{studio.category}</span>
+                  </div>
+                </figure>
+                <div className="card-body p-5">
+                  <h2 className="card-title text-lg text-white line-clamp-1">{studio.title}</h2>
+                  <div className="flex items-center gap-2 text-gray-400 text-sm mt-1">
+                    <MapPin className="w-4 h-4 text-warning" />
+                    <span className="truncate">{studio.location}</span>
+                  </div>
+                  <p className="text-xl font-bold text-white mt-2">${studio.hourlyRate}/hr</p>
+                  
+                  <div className="card-actions justify-end mt-4 pt-4 border-t border-base-300">
+                    <Link href={`/studios/edit/${studio._id}`} className="btn btn-sm btn-info text-white gap-2">
+                      <Edit className="w-4 h-4" /> Update
+                    </Link>
+                    <button onClick={() => setDeleteId(studio._id)} className="btn btn-sm btn-error text-white gap-2">
+                      <Trash2 className="w-4 h-4" /> Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {deleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="card w-full max-w-sm bg-base-200 border border-base-300">
+            <div className="card-body items-center text-center">
+              <Trash2 className="w-12 h-12 text-error mb-2" />
+              <h3 className="font-bold text-xl text-white">Delete Workspace?</h3>
+              <p className="text-gray-400 text-sm">This action cannot be undone. Are you sure you want to permanently delete this listing?</p>
+              <div className="card-actions w-full mt-4 flex gap-2">
+                <button onClick={() => setDeleteId(null)} className="btn btn-ghost flex-1">Cancel</button>
+                <button onClick={confirmDelete} className="btn btn-error text-white flex-1">Yes, Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/studios/edit/[id]/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Edit3 } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function EditStudio() {
+  const router = useRouter();
+  
+  const [formData, setFormData] = useState({
+    title: "Neon Vault 4K Cinema Soundstage",
+    category: "Film Stage",
+    hourlyRate: "135",
+    location: "Downtown Los Angeles, CA",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.success("Studio updated successfully via PUT/PATCH simulation!");
+    router.push("/my-listings");
+  };
+
+  return (
+    <main className="min-h-[80vh] bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-white flex items-center gap-3 mb-8">
+          <Edit3 className="w-8 h-8 text-warning" />
+          Update Workspace
+        </h1>
+
+        <form onSubmit={handleSubmit} className="bg-base-200 p-6 md:p-8 rounded-2xl border border-base-300 space-y-6">
+          <div className="form-control w-full">
+            <label className="label"><span className="label-text text-gray-400">Host (Read-only)</span></label>
+            <input type="text" value="Alex Rivera" readOnly className="input input-bordered bg-base-300 text-gray-500 cursor-not-allowed" />
+          </div>
+
+          <div className="form-control w-full">
+            <label className="label"><span className="label-text font-medium text-white">Title</span></label>
+            <input type="text" name="title" value={formData.title} onChange={handleInputChange} className="input input-bordered bg-base-300" required />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium text-white">Hourly Rate ($)</span></label>
+              <input type="number" name="hourlyRate" value={formData.hourlyRate} onChange={handleInputChange} className="input input-bordered bg-base-300" required />
+            </div>
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium text-white">Location</span></label>
+              <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="input input-bordered bg-base-300" required />
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-warning w-full mt-4">Save Changes</button>
+        </form>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="src/app/add-studio/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { PlusCircle, UploadCloud } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function AddStudio() {
+  const router = useRouter();
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    hourlyRate: "",
+    securityDeposit: "",
+    capacity: "",
+    location: "",
+    overview: "",
+  });
+
+  const amenitiesList = [
+    "Cyclorama Wall",
+    "Soundproof Booth",
+    "DMX Lighting Grid",
+    "Green Room",
+    "Dolby Atmos Setup",
+    "Drive-In Loading Bay"
+  ];
+  
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+  const handleCheckboxChange = (amenity: string) => {
+    setSelectedAmenities(prev => 
+      prev.includes(amenity) ? prev.filter(a => a !== amenity) : [...prev, amenity]
+    );
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.category || !formData.hourlyRate || !formData.location) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    toast.success("Studio published successfully! (UI Simulation)");
+    router.push("/my-listings");
+  };
+
+  return (
+    <main className="min-h-screen bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
+            <PlusCircle className="w-8 h-8 text-warning" />
+            List a New Workspace
+          </h1>
+          <p className="text-gray-400 mt-2">Add your creative studio to the platform and start accepting bookings.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="bg-base-200 p-6 md:p-8 rounded-2xl border border-base-300 shadow-xl space-y-8">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-base-300/50 p-6 rounded-xl border border-base-300">
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text text-gray-400">Host Name (Read-only)</span></label>
+              <input type="text" value="Alex Rivera" readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
+            </div>
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text text-gray-400">Host Email (Read-only)</span></label>
+              <input type="email" value="alex.rivera@studiospace.io" readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium">Workspace Title *</span></label>
+              <input type="text" name="title" value={formData.title} onChange={handleInputChange} placeholder="e.g. Neon Vault 4K Cinema Soundstage" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control w-full">
+                <label className="label"><span className="label-text font-medium">Category *</span></label>
+                <select name="category" value={formData.category} onChange={handleInputChange} className="select select-bordered w-full bg-base-300 focus:border-warning" required>
+                  <option value="" disabled>Select a category</option>
+                  <option value="Photo Studio">Photo Studio</option>
+                  <option value="Film Stage">Film Stage</option>
+                  <option value="Podcast Lounge">Podcast Lounge</option>
+                  <option value="Music Suite">Music Suite</option>
+                  <option value="Art Workshop">Art Workshop</option>
+                </select>
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label"><span className="label-text font-medium">Location / Address *</span></label>
+                <input type="text" name="location" value={formData.location} onChange={handleInputChange} placeholder="Downtown Los Angeles, CA" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="form-control w-full">
+                <label className="label"><span className="label-text font-medium">Hourly Rate ($) *</span></label>
+                <input type="number" name="hourlyRate" value={formData.hourlyRate} onChange={handleInputChange} placeholder="135" min="1" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
+              </div>
+              <div className="form-control w-full">
+                <label className="label"><span className="label-text font-medium">Security Deposit ($)</span></label>
+                <input type="number" name="securityDeposit" value={formData.securityDeposit} onChange={handleInputChange} placeholder="150" min="0" className="input input-bordered w-full bg-base-300 focus:border-warning" />
+              </div>
+              <div className="form-control w-full">
+                <label className="label"><span className="label-text font-medium">Max Capacity</span></label>
+                <input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} placeholder="20" min="1" className="input input-bordered w-full bg-base-300 focus:border-warning" />
+              </div>
+            </div>
+
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium">Workspace Image (Required)</span></label>
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-base-300 border-dashed rounded-xl cursor-pointer bg-base-300 hover:bg-base-300/80 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
+                    <p className="text-sm text-gray-400"><span className="font-semibold text-warning">Click to upload</span> or drag and drop</p>
+                  </div>
+                  <input type="file" className="hidden" accept="image/*" />
+                </label>
+              </div>
+            </div>
+
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium">Amenities List</span></label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-base-300 rounded-xl border border-base-300">
+                {amenitiesList.map((amenity) => (
+                  <label key={amenity} className="cursor-pointer label justify-start gap-3 p-1">
+                    <input type="checkbox" className="checkbox checkbox-warning checkbox-sm" checked={selectedAmenities.includes(amenity)} onChange={() => handleCheckboxChange(amenity)} />
+                    <span className="label-text">{amenity}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text font-medium">Detailed Overview</span></label>
+              <textarea name="overview" value={formData.overview} onChange={handleInputChange} className="textarea textarea-bordered h-32 bg-base-300 focus:border-warning" placeholder="Describe your studio space, lighting setups, rules, and unique features..."></textarea>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-base-300">
+            <button type="submit" className="btn btn-warning btn-lg font-bold px-10">
+              Publish Workspace
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/login/page.tsx">
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Aperture } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    toast.success("UI Ready! Backend connection coming soon.");
+  };
+
+  const handleGoogleLogin = () => {
+    toast.success("Google UI Ready! Backend connection coming soon.");
+  };
+
+  return (
+    <main className="min-h-[85vh] flex items-center justify-center bg-base-100 px-4 py-12">
+      <div className="card w-full max-w-md bg-base-200 shadow-2xl border border-base-300">
+        <div className="card-body px-8 py-10">
+          <div className="flex flex-col items-center mb-8">
+            <Aperture className="w-12 h-12 text-warning mb-2" />
+            <h1 className="text-3xl font-bold text-white tracking-wide">Welcome Back</h1>
+            <p className="text-gray-400 text-sm mt-2">Log in to your StudioSpace account</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Email Address</span>
+              </label>
+              <input
+                type="email"
+                placeholder="director@studiospace.com"
+                className="input input-bordered w-full bg-base-300 focus:border-warning focus:ring-1 focus:ring-warning"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="input input-bordered w-full bg-base-300 focus:border-warning focus:ring-1 focus:ring-warning"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label className="label justify-end mt-1">
+                <Link href="#" className="label-text-alt text-warning hover:underline">
+                  Forgot Password?
+                </Link>
+              </label>
+            </div>
+
+            <button type="submit" className="btn btn-warning w-full mt-2 text-black font-bold">
+              Log In
+            </button>
+          </form>
+
+          <div className="divider text-gray-500 my-6">OR</div>
+
+          <button 
+            onClick={handleGoogleLogin}
+            className="btn btn-outline w-full hover:bg-white hover:text-black text-gray-300 border-gray-500"
+          >
+            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Continue with Google
+          </button>
+
+          <p className="text-center text-sm text-gray-400 mt-8">
+            Don't have a StudioSpace account?{" "}
+            <Link href="/register" className="text-warning font-semibold hover:underline">
+              Register here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/register/page.tsx">
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Aperture } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function Register() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (pass: string) => {
+    if (pass.length < 6) return "Password must be at least 6 characters.";
+    if (!/[A-Z]/.test(pass)) return "Password must have an uppercase letter.";
+    if (!/[a-z]/.test(pass)) return "Password must have a lowercase letter.";
+    return "";
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError("");
+
+    if (!name || !email || !photoUrl || !password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    const validationError = validatePassword(password);
+    if (validationError) {
+      setPasswordError(validationError);
+      toast.error("Invalid password criteria.");
+      return;
+    }
+
+    toast.success("UI Ready! Backend integration coming soon.");
+    router.push("/login");
+  };
+
+  const handleGoogleRegister = () => {
+    toast.success("Google UI Ready! Backend integration coming soon.");
+  };
+
+  return (
+    <main className="min-h-[85vh] flex items-center justify-center bg-base-100 px-4 py-12">
+      <div className="card w-full max-w-lg bg-base-200 shadow-2xl border border-base-300">
+        <div className="card-body px-8 py-10">
+          <div className="flex flex-col items-center mb-6">
+            <Aperture className="w-12 h-12 text-warning mb-2" />
+            <h1 className="text-3xl font-bold text-white tracking-wide">Create Account</h1>
+            <p className="text-gray-400 text-sm mt-2">Join the StudioSpace creator network</p>
+          </div>
+
+          <form onSubmit={handleRegister} className="space-y-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Full Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Christopher Nolan"
+                className="input input-bordered w-full bg-base-300 focus:border-warning"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Email Address</span>
+              </label>
+              <input
+                type="email"
+                placeholder="director@studiospace.com"
+                className="input input-bordered w-full bg-base-300 focus:border-warning"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Photo URL</span>
+              </label>
+              <input
+                type="url"
+                placeholder="https://example.com/photo.jpg"
+                className="input input-bordered w-full bg-base-300 focus:border-warning"
+                value={photoUrl}
+                onChange={(e) => setPhotoUrl(e.target.value)}
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className={`input input-bordered w-full bg-base-300 focus:border-warning ${passwordError ? "border-error" : ""}`}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError("");
+                }}
+              />
+              {passwordError && (
+                <label className="label">
+                  <span className="label-text-alt text-error font-medium">{passwordError}</span>
+                </label>
+              )}
+            </div>
+
+            <button type="submit" className="btn btn-warning w-full mt-4 text-black font-bold">
+              Register
+            </button>
+          </form>
+
+          <div className="divider text-gray-500 my-6">OR</div>
+
+          <button 
+            onClick={handleGoogleRegister}
+            className="btn btn-outline w-full hover:bg-white hover:text-black text-gray-300 border-gray-500"
+          >
+            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Continue with Google
+          </button>
+
+          <p className="text-center text-sm text-gray-400 mt-6">
+            Already have an account?{" "}
+            <Link href="/login" className="text-warning font-semibold hover:underline">
+              Log in here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/studios/[id]/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import { MapPin, Star, Users, CheckCircle, Clock, ShieldCheck, Heart } from "lucide-react";
+import toast from "react-hot-toast";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+export default function StudioDetails() {
+  const params = useParams();
+  const [isSaved, setIsSaved] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
+  const studio = {
+    _id: params.id as string,
+    title: "Neon Vault 4K Cinema Soundstage & Cyclorama",
+    category: "Film Stage",
+    hourlyRate: 135,
+    rating: 4.9,
+    reviews: 42,
+    location: "Downtown Los Angeles, CA",
+    capacity: 20,
+    images: [
+      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1200&auto=format&fit=crop"
+    ],
+    overview: "Massive 3,000 sq ft creative soundstage with 22-foot ceilings, automated RGB lighting grid, heavy rigging trusses, and a private green room. Perfect for music videos, commercials, and high-end interviews.",
+    amenities: [
+      "Cyclorama Wall", "Soundproof Visual Booth", "High-Speed Gigabit WiFi", 
+      "DMX Lighting Grid", "Drive-In Loading Bay", "Makeup & Wardrobe Room"
+    ],
+    host: {
+      name: "Alex Rivera",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d"
+    }
+  };
+
+  const handleSave = () => {
+    setIsSaved(!isSaved);
+    if (!isSaved) toast.success("Added to your wishlist!");
+    else toast.success("Removed from your wishlist!");
+  };
+
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowBookingModal(false);
+    toast.success("UI Ready! Booking reservation backend coming soon.");
+  };
+
+  return (
+    <main className="min-h-screen bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="badge badge-warning font-semibold">{studio.category}</span>
+              <div className="flex items-center gap-1 text-gray-300 text-sm">
+                <Star className="w-4 h-4 text-warning fill-warning" />
+                <span className="font-bold">{studio.rating}</span>
+                <span>({studio.reviews} reviews)</span>
+              </div>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">{studio.title}</h1>
+            <div className="flex items-center gap-2 text-gray-400 mt-2">
+              <MapPin className="w-5 h-5 text-warning" />
+              <span>{studio.location}</span>
+            </div>
+          </div>
+          
+          <button onClick={handleSave} className="btn btn-outline btn-sm gap-2">
+            <Heart className={`w-4 h-4 ${isSaved ? "fill-error text-error" : ""}`} />
+            {isSaved ? "Saved" : "Save Workspace"}
+          </button>
+        </div>
+
+        {/* Gallery Carousel */}
+        <div className="w-full h-[50vh] md:h-[60vh] rounded-2xl overflow-hidden mb-12 border border-base-300 relative group">
+          <Swiper
+            modules={[Navigation, Pagination]}
+            navigation
+            pagination={{ clickable: true }}
+            className="w-full h-full"
+          >
+            {studio.images.map((img, index) => (
+              <SwiperSlide key={index}>
+                <img src={img} alt={`Studio image ${index + 1}`} className="w-full h-full object-cover" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-12">
+            
+            {/* Overview */}
+            <section>
+              <h2 className="text-2xl font-bold mb-4 border-b border-base-300 pb-2">Workspace Overview</h2>
+              <p className="text-gray-300 leading-relaxed text-lg">{studio.overview}</p>
+            </section>
+
+            {/* Quick Stats */}
+            <div className="flex gap-6 py-6 border-y border-base-300">
+              <div className="flex items-center gap-3">
+                <Users className="w-8 h-8 text-warning" />
+                <div>
+                  <p className="text-sm text-gray-400">Max Capacity</p>
+                  <p className="font-bold text-lg">{studio.capacity} People</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock className="w-8 h-8 text-warning" />
+                <div>
+                  <p className="text-sm text-gray-400">Minimum Booking</p>
+                  <p className="font-bold text-lg">2 Hours</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Amenities */}
+            <section>
+              <h2 className="text-2xl font-bold mb-4">Equipment & Amenities</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {studio.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-success" />
+                    <span>{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Host Section */}
+            <section className="bg-base-200 p-6 rounded-xl border border-base-300 flex items-center gap-4">
+              <img src={studio.host.avatar} alt={studio.host.name} className="w-16 h-16 rounded-full object-cover border-2 border-warning" />
+              <div>
+                <p className="text-sm text-gray-400">Hosted by</p>
+                <p className="text-xl font-bold text-white">{studio.host.name}</p>
+                <div className="flex items-center gap-1 mt-1 text-xs text-success font-medium">
+                  <ShieldCheck className="w-4 h-4" /> Identity Verified
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          {/* Sticky Booking Widget */}
+          <div className="lg:col-span-1">
+            <div className="card bg-base-200 shadow-2xl border border-base-300 sticky top-24">
+              <div className="card-body p-6">
+                <div className="flex items-end justify-between border-b border-base-300 pb-4 mb-4">
+                  <div>
+                    <span className="text-3xl font-bold text-white">${studio.hourlyRate}</span>
+                    <span className="text-gray-400"> / hour</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-warning fill-warning" />
+                    <span className="font-bold text-sm">{studio.rating}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-6 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Security Deposit</span>
+                    <span className="font-semibold">$150</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Cancellation Policy</span>
+                    <span className="text-info hover:underline cursor-pointer">Flexible</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setShowBookingModal(true)} 
+                  className="btn btn-warning w-full btn-lg font-bold"
+                >
+                  Book Workspace Now
+                </button>
+                <p className="text-center text-xs text-gray-500 mt-4">You won't be charged yet. Host approval may be required.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="card w-full max-w-md bg-base-200 shadow-2xl border border-base-300">
+            <div className="card-body">
+              <h3 className="font-bold text-2xl mb-2">Reserve Workspace</h3>
+              <p className="text-sm text-gray-400 mb-6">{studio.title}</p>
+              
+              <form onSubmit={handleBookingSubmit} className="space-y-4">
+                <div className="form-control">
+                  <label className="label"><span className="label-text">Select Date</span></label>
+                  <input type="date" required className="input input-bordered w-full bg-base-300" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="form-control">
+                    <label className="label"><span className="label-text">Start Time</span></label>
+                    <input type="time" required className="input input-bordered w-full bg-base-300" />
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text">End Time</span></label>
+                    <input type="time" required className="input input-bordered w-full bg-base-300" />
+                  </div>
+                </div>
+                
+                <div className="form-control">
+                  <label className="label"><span className="label-text">Special Requests (Optional)</span></label>
+                  <textarea className="textarea textarea-bordered bg-base-300 h-24" placeholder="Lighting prep, green room access..."></textarea>
+                </div>
+                
+                <div className="card-actions mt-6 flex justify-end gap-2">
+                  <button type="button" onClick={() => setShowBookingModal(false)} className="btn btn-ghost">Cancel</button>
+                  <button type="submit" className="btn btn-warning">Confirm Reservation</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/studios/page.tsx">
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { MapPin, Star, Heart, Search, Filter } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function ExploreStudios() {
+  const [studios, setStudios] = useState([
+    {
+      _id: "1",
+      title: "Neon Vault 4K Cinema Soundstage",
+      category: "Film Stage",
+      hourlyRate: 135,
+      rating: 4.9,
+      location: "Downtown Los Angeles, CA",
+      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop",
+      isSaved: false
+    },
+    {
+      _id: "2",
+      title: "The Prism Cyc & Photo Studio",
+      category: "Photo Studio",
+      hourlyRate: 95,
+      rating: 4.8,
+      location: "Brooklyn, NY",
+      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=800&auto=format&fit=crop",
+      isSaved: true
+    },
+    {
+      _id: "3",
+      title: "Velvet Echo Analog Recording",
+      category: "Music Suite",
+      hourlyRate: 110,
+      rating: 5.0,
+      location: "Nashville, TN",
+      image: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=800&auto=format&fit=crop",
+      isSaved: false
+    },
+    {
+      _id: "4",
+      title: "Skyline Horizon Rooftop Production",
+      category: "Film Stage",
+      hourlyRate: 150,
+      rating: 4.7,
+      location: "Chicago, IL",
+      image: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=800&auto=format&fit=crop",
+      isSaved: false
+    },
+    {
+      _id: "5",
+      title: "Apex Dolby Atmos Podcast Lounge",
+      category: "Podcast Lounge",
+      hourlyRate: 85,
+      rating: 4.9,
+      location: "Austin, TX",
+      image: "https://images.unsplash.com/photo-1581368135153-a506cf13b1e1?q=80&w=800&auto=format&fit=crop",
+      isSaved: true
+    },
+    {
+      _id: "6",
+      title: "Obsidian Blackbox Workshop",
+      category: "Workshop",
+      hourlyRate: 75,
+      rating: 4.6,
+      location: "Atlanta, GA",
+      image: "https://images.unsplash.com/photo-1516280440502-39c43729e2f0?q=80&w=800&auto=format&fit=crop",
+      isSaved: false
+    }
+  ]);
+
+  const toggleSave = (id: string) => {
+    setStudios(studios.map(studio => {
+      if (studio._id === id) {
+        const newSavedState = !studio.isSaved;
+        if (newSavedState) toast.success("Added to your wishlist!");
+        else toast.success("Removed from your wishlist!");
+        return { ...studio, isSaved: newSavedState };
+      }
+      return studio;
+    }));
+  };
+
+  return (
+    <main className="min-h-screen bg-base-100 py-10 px-4 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide">Explore Creative Studios</h1>
+            <p className="text-gray-400 mt-2">Discover premium production spaces curated for your next masterpiece.</p>
+          </div>
+          
+          <div className="flex gap-2 w-full md:w-auto">
+            <div className="join w-full md:w-80">
+              <input className="input input-bordered join-item w-full bg-base-200" placeholder="Search studios..." />
+              <button className="btn btn-warning join-item"><Search className="w-5 h-5" /></button>
+            </div>
+            <button className="btn btn-outline btn-square border-base-300 text-gray-300">
+              <Filter className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {studios.map((studio) => (
+            <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300 hover:border-warning/50 transition-all duration-300 flex flex-col h-full group">
+              <figure className="relative h-60 w-full overflow-hidden">
+                <img 
+                  src={studio.image} 
+                  alt={studio.title} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="badge badge-warning font-semibold border-none px-3 py-3">
+                    {studio.category}
+                  </span>
+                </div>
+                <button 
+                  onClick={() => toggleSave(studio._id)}
+                  className="absolute top-4 right-4 btn btn-circle btn-sm bg-base-100/50 hover:bg-base-100 border-none backdrop-blur-sm"
+                >
+                  <Heart className={`w-4 h-4 ${studio.isSaved ? "fill-error text-error" : "text-white"}`} />
+                </button>
+              </figure>
+              
+              <div className="card-body p-6 flex flex-col flex-grow">
+                <h2 className="card-title text-xl text-white line-clamp-1">{studio.title}</h2>
+                
+                <div className="flex items-center gap-2 text-gray-400 text-sm mt-1 mb-4">
+                  <MapPin className="w-4 h-4 text-warning" />
+                  <span className="truncate">{studio.location}</span>
+                </div>
+                
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-base-300">
+                  <div className="flex flex-col">
+                    <span className="text-2xl font-bold text-white">${studio.hourlyRate}<span className="text-sm font-normal text-gray-500">/hr</span></span>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-4 h-4 fill-warning text-warning" />
+                      <span className="text-sm font-medium text-gray-300">{studio.rating} Rating</span>
+                    </div>
+                  </div>
+                  
+                  <div className="card-actions">
+                    <Link href={`/studios/${studio._id}`} className="btn btn-warning px-6">
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/app/globals.css">
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+  background-color: #09090b;
+  color: #ffffff;
+}
+
+[data-theme="light"] {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+</file>
+
+<file path="src/app/loading.tsx">
+import { Aperture } from "lucide-react";
+
+export default function Loading() {
+  return (
+    <div className="min-h-[80vh] flex flex-col items-center justify-center bg-base-100">
+      <Aperture className="w-16 h-16 text-warning animate-spin mb-4" />
+      <h2 className="text-xl font-semibold text-gray-300 animate-pulse">
+        Loading StudioSpace...
+      </h2>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/not-found.tsx">
+import Link from "next/link";
+import { Clapperboard, Home, SearchX } from "lucide-react";
+
+export default function NotFound() {
+  return (
+    <main className="min-h-[80vh] bg-base-100 flex items-center justify-center px-4">
+      <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+        <div className="relative mb-8">
+          <Clapperboard className="w-32 h-32 text-base-300 animate-pulse" />
+          <SearchX className="w-16 h-16 text-warning absolute -bottom-2 -right-2" />
+        </div>
+        
+        <h1 className="text-6xl font-bold text-white mb-4 tracking-tighter">404</h1>
+        <h2 className="text-2xl md:text-3xl font-semibold mb-6">Cut! Scene Not Found.</h2>
+        
+        <p className="text-gray-400 mb-10 text-lg leading-relaxed">
+          The studio space or page you are looking for has been wrapped, moved, or doesn't exist on our production schedule.
+        </p>
+        
+        <Link href="/" className="btn btn-warning btn-lg gap-2 px-8">
+          <Home className="w-5 h-5" />
+          Return to Home
+        </Link>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="src/components/home/BrowseCategories.tsx">
+import Link from "next/link";
+import { Camera, Clapperboard, Mic, Music, Paintbrush } from "lucide-react";
+
+export default function BrowseCategories() {
+  const categories = [
+    {
+      id: 1,
+      title: "Photo Studios",
+      icon: <Camera className="w-10 h-10 text-warning" />,
+      href: "/studios?category=photo",
+      description: "Cyc walls and natural light spaces",
+    },
+    {
+      id: 2,
+      title: "Sound Stages",
+      icon: <Clapperboard className="w-10 h-10 text-warning" />,
+      href: "/studios?category=film",
+      description: "Acoustically treated film stages",
+    },
+    {
+      id: 3,
+      title: "Podcast Rooms",
+      icon: <Mic className="w-10 h-10 text-warning" />,
+      href: "/studios?category=podcast",
+      description: "Multi-cam setups with audio gear",
+    },
+    {
+      id: 4,
+      title: "Music Suites",
+      icon: <Music className="w-10 h-10 text-warning" />,
+      href: "/studios?category=music",
+      description: "Dolby Atmos mixing & recording",
+    },
+    {
+      id: 5,
+      title: "Art Workshops",
+      icon: <Paintbrush className="w-10 h-10 text-warning" />,
+      href: "/studios?category=art",
+      description: "Spacious areas for physical crafting",
+    },
+  ];
+
+  return (
+    <section className="py-20 bg-base-200">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <div className="text-center mb-12">
+          <span className="text-warning font-bold tracking-wider uppercase text-sm">
+            Curated Production Environments
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2">Browse by Creative Discipline</h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {categories.map((category) => (
+            <Link 
+              key={category.id} 
+              href={category.href}
+              className="card bg-base-100 shadow-xl hover:-translate-y-2 transition-transform duration-300 border border-base-300 hover:border-warning group"
+            >
+              <div className="card-body items-center text-center p-8">
+                <div className="p-4 bg-base-200 rounded-full group-hover:scale-110 transition-transform duration-300">
+                  {category.icon}
+                </div>
+                <h3 className="card-title text-lg mt-4">{category.title}</h3>
+                <p className="text-sm text-gray-400 mt-2">{category.description}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/home/HeroBanner.tsx">
+"use client";
+
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useState, useEffect } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+export default function HeroBanner() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const slides = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop",
+      title: "Reserve Production Spaces Built for Visionary Creators",
+      subtitle: "Step into pre-rigged cycloramas, cinema soundstages, and 4K multi-cam podcast lounges.",
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop",
+      title: "Premium Photography Cyc Walls & Lighting Sets",
+      subtitle: "Discover hand-inspected photo studios equipped with industry-leading strobe lighting and modifiers.",
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=2070&auto=format&fit=crop",
+      title: "Acoustically Treated Music & Audio Suites",
+      subtitle: "Produce your next track in Dolby Atmos mixing suites across the continent.",
+    }
+  ];
+
+  if (!isMounted) {
+    return <div className="w-full h-[80vh] bg-base-300 animate-pulse"></div>;
+  }
+
+  return (
+    <div className="w-full h-[80vh] relative group">
+      <Swiper
+        modules={[Autoplay, Navigation, Pagination]}
+        navigation
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        loop={true}
+        className="w-full h-full"
+      >
+        {slides.map((slide) => (
+          <SwiperSlide key={slide.id}>
+            <div
+              className="w-full h-full bg-cover bg-center relative flex items-center justify-center text-center px-4"
+              style={{ backgroundImage: `url(${slide.image})` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-base-300/80 via-base-300/60 to-base-100"></div>
+              
+              <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-6">
+                <span className="badge badge-warning badge-outline px-4 py-3 font-semibold uppercase tracking-widest text-xs">
+                  Next-Gen Creative Studios
+                </span>
+                <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight drop-shadow-lg">
+                  {slide.title}
+                </h1>
+                <p className="text-lg md:text-xl text-gray-300 max-w-2xl font-light">
+                  {slide.subtitle}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                  <Link href="/studios" className="btn btn-warning btn-lg px-8">
+                    Explore All Studios
+                  </Link>
+                  <Link href="/register" className="btn btn-outline btn-lg px-8 text-white hover:bg-white hover:text-black">
+                    Host Your Space
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/home/HostGuarantee.tsx">
+import { ShieldCheck, UserCheck, Wrench, HeadphonesIcon } from "lucide-react";
+
+export default function HostGuarantee() {
+  const assurances = [
+    {
+      id: 1,
+      title: "Liability Protection",
+      icon: <ShieldCheck className="w-10 h-10 text-warning" />,
+      description: "Comprehensive property and stage damage protection for every reservation.",
+    },
+    {
+      id: 2,
+      title: "Verified Profiles",
+      icon: <UserCheck className="w-10 h-10 text-warning" />,
+      description: "Every creator and host undergoes strict ID and portfolio verification.",
+    },
+    {
+      id: 3,
+      title: "Equipment Safety",
+      icon: <Wrench className="w-10 h-10 text-warning" />,
+      description: "Pre-shoot inspections ensure all lighting grids and gear are safely rigged.",
+    },
+    {
+      id: 4,
+      title: "24/7 Host Support",
+      icon: <HeadphonesIcon className="w-10 h-10 text-warning" />,
+      description: "Round-the-clock technical and booking support so you can focus on creating.",
+    },
+  ];
+
+  return (
+    <section id="about-us" className="py-20 bg-base-200 border-t border-base-300">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-12 items-center">
+          <div className="lg:w-1/3">
+            <span className="text-warning font-bold tracking-wider uppercase text-sm">
+              Trust, Safety & Peace of Mind
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-6 leading-tight">
+              Built on Uncompromising Protection
+            </h2>
+            <p className="text-gray-400 mb-8 leading-relaxed">
+              We understand creative production is unpredictable. StudioSpace provides enterprise-grade safety umbrellas, verified host guarantees, and around-the-clock support so you can focus entirely on your craft.
+            </p>
+          </div>
+          
+          <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {assurances.map((item) => (
+              <div key={item.id} className="card bg-base-100 shadow-md border border-base-300 hover:border-warning/50 transition-colors duration-300">
+                <div className="card-body">
+                  <div className="mb-4">
+                    {item.icon}
+                  </div>
+                  <h3 className="card-title text-lg">{item.title}</h3>
+                  <p className="text-gray-400 text-sm mt-2">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/home/HowItWorks.tsx">
+import { Search, Clock, CheckCircle, Clapperboard } from "lucide-react";
+
+export default function HowItWorks() {
+  const steps = [
+    {
+      id: 1,
+      title: "1. Discover Spaces",
+      icon: <Search className="w-12 h-12 text-warning" />,
+      description: "Filter verified cyc walls, podcast lounges, and stages by location and gear.",
+    },
+    {
+      id: 2,
+      title: "2. Select Shoot Hours",
+      icon: <Clock className="w-12 h-12 text-warning" />,
+      description: "Inspect live calendar availability and choose precise hourly blocks.",
+    },
+    {
+      id: 3,
+      title: "3. Book Instantly",
+      icon: <CheckCircle className="w-12 h-12 text-warning" />,
+      description: "Lock in your reservation with double-booking prevention and clear pricing.",
+    },
+    {
+      id: 4,
+      title: "4. Create & Produce",
+      icon: <Clapperboard className="w-12 h-12 text-warning" />,
+      description: "Arrive at the stage with verified access and start producing your vision.",
+    },
+  ];
+
+  return (
+    <section id="how-it-works" className="py-20 bg-base-100">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold">How StudioSpace Works</h2>
+          <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+            Four simple steps from pre-production concept to rolling cameras in world-class creative facilities.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {steps.map((step) => (
+            <div key={step.id} className="flex flex-col items-center text-center group">
+              <div className="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center mb-6 group-hover:bg-warning/20 transition-colors duration-300">
+                {step.icon}
+              </div>
+              <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/shared/EmptyState.tsx">
+import Link from "next/link";
+import { FolderOpen } from "lucide-react";
+
+interface EmptyStateProps {
+  title: string;
+  subtitle: string;
+  buttonText?: string;
+  buttonLink?: string;
+}
+
+export default function EmptyState({ title, subtitle, buttonText, buttonLink }: EmptyStateProps) {
+  return (
+    <div className="flex flex-col items-center justify-center p-12 text-center bg-base-200 rounded-xl border border-base-300 my-8 w-full">
+      <div className="w-20 h-20 bg-base-300 rounded-full flex items-center justify-center mb-6">
+        <FolderOpen className="w-10 h-10 text-gray-400" />
+      </div>
+      <h3 className="text-2xl font-bold mb-2 text-white">{title}</h3>
+      <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
+        {subtitle}
+      </p>
+      {buttonText && buttonLink && (
+        <Link href={buttonLink} className="btn btn-warning px-8">
+          {buttonText}
+        </Link>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/shared/Footer.tsx">
+import Link from "next/link";
+import { Aperture } from "lucide-react";
+
+export default function Footer() {
+  return (
+    <footer className="bg-base-200 text-base-content mt-auto">
+      <div className="footer p-10 max-w-7xl mx-auto">
+        <aside>
+          <div className="flex items-center gap-2 mb-2">
+            <Aperture className="w-8 h-8 text-warning" />
+            <span className="font-bold text-xl tracking-wider">StudioSpace</span>
+          </div>
+          <p className="max-w-xs">
+            StudioSpace is the premier peer-to-peer workspace sharing marketplace connecting filmmakers, photographers, and creators with world-class production facilities.
+          </p>
+        </aside> 
+        
+        <nav>
+          <h6 className="footer-title">Explore</h6> 
+          <Link href="/studios" className="link link-hover">All Workspaces</Link>
+          <Link href="/#how-it-works" className="link link-hover">How It Works</Link>
+          <Link href="/#about-us" className="link link-hover">About Us</Link>
+          <Link href="/register" className="link link-hover">Host Your Studio</Link>
+        </nav> 
+        
+        <nav>
+          <h6 className="footer-title">Categories</h6> 
+          <Link href="/studios?category=photo" className="link link-hover">Photo Studios</Link>
+          <Link href="/studios?category=film" className="link link-hover">Cinema & Sound Stages</Link>
+          <Link href="/studios?category=podcast" className="link link-hover">Podcast Lounges</Link>
+          <Link href="/studios?category=music" className="link link-hover">Music & Audio Suites</Link>
+        </nav> 
+        
+        <form>
+          <h6 className="footer-title">Join Our Creator Newsletter</h6> 
+          <fieldset className="form-control w-80">
+            <label className="label">
+              <span className="label-text">Enter your email address</span>
+            </label> 
+            <div className="join w-full">
+              <input type="text" placeholder="username@site.com" className="input input-bordered join-item w-full" /> 
+              <button className="btn btn-warning join-item">Subscribe</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      
+      <div className="footer footer-center p-6 border-t border-base-300">
+        <aside className="flex flex-col sm:flex-row items-center justify-between w-full max-w-7xl mx-auto">
+          <p>© 2026 StudioSpace Platform. All rights reserved. Terms & Privacy.</p>
+          <div className="flex gap-4 mt-4 sm:mt-0 text-base-content">
+            <a href="#" aria-label="X">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="YouTube">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2.5 7.1C2.6 5.9 3.5 5 4.7 5h14.6c1.2 0 2.1.9 2.2 2.1.2 1.6.2 3.3.2 4.9s0 3.3-.2 4.9c-.1 1.2-1 2.1-2.2 2.1H4.7c-1.2 0-2.1-.9-2.2-2.1C2.3 15.3 2.3 13.6 2.3 12s0-3.3.2-4.9z"/><path d="m10 15 5-3-5-3v6z"/></svg>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+  cacheComponents: true,
+  partialPrefetching: true,
+  reactCompiler: true,
+  turbopack: {
+    rules: {
+      "*.css": {
+        loaders: ["@tailwindcss/turbopack"],
+        as: "*.css",
+      },
+    },
+  },
+};
+
+export default nextConfig;
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "studio-space-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "daisyui": "^5.7.50",
+    "html2pdf.js": "^0.14.0",
+    "lucide-react": "^1.66.0",
+    "next": "16.4.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hot-toast": "^2.6.1",
+    "react-icons": "^5.7.0",
+    "swiper": "^14.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="src/app/layout.tsx">
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
+import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "StudioSpace | Peer-to-Peer Creative Workspace",
+  description: "Reserve production spaces built for visionary creators.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" data-theme="dark">
+      <body className={inter.className}>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </div>
+        <Toaster position="bottom-right" />
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="src/components/shared/Navbar.tsx">
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Aperture, Sun, Moon, Menu } from "lucide-react";
+import { useState, useEffect, Suspense } from "react";
+import toast from "react-hot-toast";
+
+function NavbarContent() {
+  const pathname = usePathname();
+  const [theme, setTheme] = useState("dark");
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    toast.success("Logged out successfully");
+  };
+
+  const navLinks = (
+    <>
+      <li>
+        <Link href="/" className={pathname === "/" ? "text-warning font-semibold" : ""}>
+          Home
+        </Link>
+      </li>
+      <li>
+        <Link href="/studios" className={pathname === "/studios" ? "text-warning font-semibold" : ""}>
+          Explore Studios
+        </Link>
+      </li>
+      <li>
+        <Link href="/#how-it-works">How It Works</Link>
+      </li>
+      <li>
+        <Link href="/#about-us">About Us</Link>
+      </li>
+    </>
+  );
+
+  return (
+    <div className="navbar bg-base-100/90 sticky top-0 z-50 backdrop-blur border-b border-base-300 px-4 lg:px-8">
+      <div className="navbar-start">
+        <div className="dropdown">
+          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+            <Menu className="w-5 h-5" />
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52"
+          >
+            {navLinks}
+          </ul>
+        </div>
+        <Link href="/" className="btn btn-ghost text-xl flex gap-2 items-center">
+          <Aperture className="w-8 h-8 text-warning" />
+          <span className="font-bold tracking-wider hidden sm:block">StudioSpace</span>
+        </Link>
+      </div>
+      
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1 gap-2">
+          {navLinks}
+        </ul>
+      </div>
+      
+      <div className="navbar-end flex gap-4">
+        <button onClick={toggleTheme} className="btn btn-ghost btn-circle">
+          {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+        
+        {isAuthenticated ? (
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar border border-warning/50">
+              <div className="w-10 rounded-full">
+                <img alt="User Avatar" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
+              </div>
+            </div>
+            <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-56 border border-base-300">
+              <li className="menu-title px-4 py-2 text-warning font-bold border-b border-base-300 mb-2">
+                Alex Rivera
+              </li>
+              <li>
+                <Link href="/dashboard" className={pathname === "/dashboard" ? "active bg-base-300" : ""}>Dashboard</Link>
+              </li>
+              <li>
+                <Link href="/add-studio" className={pathname === "/add-studio" ? "active bg-base-300" : ""}>Add New Studio</Link>
+              </li>
+              <li>
+                <Link href="/my-listings" className={pathname === "/my-listings" ? "active bg-base-300" : ""}>My Studio Listings</Link>
+              </li>
+              <li>
+                <Link href="/my-bookings" className={pathname === "/my-bookings" ? "active bg-base-300" : ""}>My Bookings</Link>
+              </li>
+              <li className="mt-2 border-t border-base-300 pt-2">
+                <button onClick={handleLogout} className="text-error hover:bg-error/10">Logout</button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className="hidden sm:flex gap-2">
+            <Link href="/login" className="btn btn-ghost">Login</Link>
+            <Link href="/register" className="btn btn-warning">Register</Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={<div className="h-16 bg-base-100 border-b border-base-300"></div>}>
+      <NavbarContent />
+    </Suspense>
+  );
+}
+</file>
+
+<file path="src/app/page.tsx">
+import HeroBanner from "@/components/home/HeroBanner";
+import BrowseCategories from "@/components/home/BrowseCategories";
+import HowItWorks from "@/components/home/HowItWorks";
+import HostGuarantee from "@/components/home/HostGuarantee";
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-base-100 text-base-content flex flex-col">
+      <HeroBanner />
+      <BrowseCategories />
+      <HowItWorks />
+      <HostGuarantee />
+    </main>
+  );
+}
+</file>
+
+</files>

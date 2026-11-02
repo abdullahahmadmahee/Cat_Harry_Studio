@@ -1,12 +1,50 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-:root {
-  background-color: #09090b;
-  color: #ffffff;
+@theme {
+  --color-warning: #EFBF04;
+}
+
+:root, [data-theme="dark"] {
+  --color-base-100: #1B1B1B;
+  --color-base-200: #242424;
+  --color-base-300: #2e2e2e;
+  --color-base-content: #ffffff;
 }
 
 [data-theme="light"] {
-  background-color: #f3f4f6;
-  color: #111827;
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc;
+  --color-base-300: #f1f5f9;
+  --color-base-content: #1B1B1B;
+}
+
+body {
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="light"] .text-white {
+  color: #1B1B1B !important;
+}
+
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400,
+[data-theme="light"] .text-gray-500 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .border-gray-500 {
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .btn-outline.text-white {
+  color: #1B1B1B !important;
+  border-color: #1B1B1B !important;
+}
+
+[data-theme="light"] .btn-outline.text-white:hover {
+  background-color: #1B1B1B !important;
+  color: #ffffff !important;
 }

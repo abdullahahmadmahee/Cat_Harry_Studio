@@ -46,8 +46,11 @@ export default function HeroBanner() {
         modules={[Autoplay, Navigation, Pagination]}
         navigation
         pagination={{ clickable: true }}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
         loop={true}
+        speed={1000}
+        observer={true}
+        observeParents={true}
         className="w-full h-full"
       >
         {slides.map((slide) => (
@@ -56,7 +59,7 @@ export default function HeroBanner() {
               className="w-full h-full bg-cover bg-center relative flex items-center justify-center text-center px-4"
               style={{ backgroundImage: `url(${slide.image})` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-base-300/80 via-base-300/60 to-base-100"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1B1B1B]/80 via-[#1B1B1B]/50 to-[#1B1B1B]"></div>
               
               <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-6">
                 <span className="badge badge-warning badge-outline px-4 py-3 font-semibold uppercase tracking-widest text-xs">
@@ -69,10 +72,10 @@ export default function HeroBanner() {
                   {slide.subtitle}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Link href="/studios" className="btn btn-warning btn-lg px-8">
+                  <Link href="/studios" className="btn btn-warning btn-lg px-8 font-bold">
                     Explore All Studios
                   </Link>
-                  <Link href="/register" className="btn btn-outline btn-lg px-8 text-white hover:bg-white hover:text-black">
+                  <Link href="/register" className="btn btn-outline btn-lg px-8 text-white hover:bg-white hover:text-[#1B1B1B]">
                     Host Your Space
                   </Link>
                 </div>
