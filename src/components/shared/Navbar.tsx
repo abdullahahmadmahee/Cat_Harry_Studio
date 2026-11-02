@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Aperture, Sun, Moon, Menu } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
-export default function Navbar() {
+function NavbarContent() {
   const pathname = usePathname();
   const [theme, setTheme] = useState("dark");
 
@@ -75,5 +75,13 @@ export default function Navbar() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={<div className="h-16 bg-base-100 border-b border-base-300"></div>}>
+      <NavbarContent />
+    </Suspense>
   );
 }
