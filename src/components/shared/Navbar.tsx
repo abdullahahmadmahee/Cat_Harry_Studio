@@ -1,27 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Aperture, Sun, Moon, Menu } from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 function NavbarContent() {
   const pathname = usePathname();
+  const router = useRouter();
   const [theme, setTheme] = useState("dark");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    toast.success("Logged out successfully");
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.removeItem("user");
+      setIsAuthenticated(false);
+      setUser(null);
+      toast.success("Logged out successfully");
+      router.push("/");
+    } catch (error) {
+      toast.error("Failed to log out");
+    }
   };
 
   const navLinks = (
@@ -78,14 +101,12 @@ function NavbarContent() {
         
         {isAuthenticated ? (
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar border border-warning/50">
-              <div className="w-10 rounded-full">
-                <img alt="User Avatar" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-              </div>
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar border border-warning/50 flex items-center justify-center bg-base-300 text-warning font-bold">
+              {user?.name?.charAt(0).toUpperCase()}
             </div>
             <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-56 border border-base-300">
-              <li className="menu-title px-4 py-2 text-warning font-bold border-b border-base-300 mb-2">
-                Alex Rivera
+              <li className="menu-title px-4 py-2 text-warning font-bold border-b border-base-300 mb-2 truncate">
+                {user?.name}
               </li>
               <li>
                 <Link href="/dashboard" className={pathname === "/dashboard" ? "active bg-base-300" : ""}>Dashboard</Link>
@@ -107,7 +128,7 @@ function NavbarContent() {
         ) : (
           <div className="hidden sm:flex gap-2">
             <Link href="/login" className="btn btn-ghost">Login</Link>
-            <Link href="/register" className="btn btn-warning">Register</Link>
+            <Link href="/register" className="btn btn-warning font-bold text-[#1B1B1B]">Register</Link>
           </div>
         )}
       </div>

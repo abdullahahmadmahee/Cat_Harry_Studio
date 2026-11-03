@@ -18,13 +18,13 @@ export default function HeroBanner() {
   const slides = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop",
       title: "Reserve Production Spaces Built for Visionary Creators",
       subtitle: "Step into pre-rigged cycloramas, cinema soundstages, and 4K multi-cam podcast lounges.",
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop",
       title: "Premium Photography Cyc Walls & Lighting Sets",
       subtitle: "Discover hand-inspected photo studios equipped with industry-leading strobe lighting and modifiers.",
     },
@@ -59,23 +59,23 @@ export default function HeroBanner() {
               className="w-full h-full bg-cover bg-center relative flex items-center justify-center text-center px-4"
               style={{ backgroundImage: `url(${slide.image})` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#1B1B1B]/80 via-[#1B1B1B]/50 to-[#1B1B1B]"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1B1B1B]/80 via-[#1B1B1B]/60 to-[#1B1B1B]"></div>
               
               <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-6">
                 <span className="badge badge-warning badge-outline px-4 py-3 font-semibold uppercase tracking-widest text-xs">
                   Next-Gen Creative Studios
                 </span>
-                <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight drop-shadow-lg">
+                <h1 className="text-4xl md:text-6xl font-bold text-[#ffffff] leading-tight drop-shadow-lg">
                   {slide.title}
                 </h1>
-                <p className="text-lg md:text-xl text-gray-300 max-w-2xl font-light">
+                <p className="text-lg md:text-xl text-[#d1d5db] max-w-2xl font-light">
                   {slide.subtitle}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Link href="/studios" className="btn btn-warning btn-lg px-8 font-bold">
+                  <Link href="/studios" className="btn btn-warning btn-lg px-8 font-bold text-[#1B1B1B]">
                     Explore All Studios
                   </Link>
-                  <Link href="/register" className="btn btn-outline btn-lg px-8 text-white hover:bg-white hover:text-[#1B1B1B]">
+                  <Link href="/add-studio" className="btn btn-outline btn-lg px-8 text-[#ffffff] hover:bg-[#ffffff] hover:text-[#1B1B1B] border-[#ffffff]">
                     Host Your Space
                   </Link>
                 </div>

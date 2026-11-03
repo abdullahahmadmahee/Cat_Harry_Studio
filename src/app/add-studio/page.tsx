@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PlusCircle, UploadCloud } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function AddStudio() {
   const router = useRouter();
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      toast.error("Please login to list a workspace.");
+      router.push("/login");
+    } else {
+      setUser(JSON.parse(storedUser));
+    }
+  }, [router]);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -16,6 +29,7 @@ export default function AddStudio() {
     capacity: "",
     location: "",
     overview: "",
+    image: "",
   });
 
   const amenitiesList = [
@@ -40,17 +54,55 @@ export default function AddStudio() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5242880) {
+        toast.error("File is too large. Please select an image under 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.category || !formData.hourlyRate || !formData.location) {
-      toast.error("Please fill in all required fields.");
+    if (!formData.title || !formData.category || !formData.hourlyRate || !formData.location || !formData.image) {
+      toast.error("Please fill in all required fields and upload an image.");
       return;
     }
 
-    toast.success("Studio published successfully! (UI Simulation)");
-    router.push("/my-listings");
+    try {
+      setIsLoading(true);
+      await axios.post(
+        "http://localhost:5000/api/studios",
+        {
+          ...formData,
+          hourlyRate: Number(formData.hourlyRate),
+          securityDeposit: Number(formData.securityDeposit) || 0,
+          capacity: Number(formData.capacity) || 1,
+          amenities: selectedAmenities,
+          hostName: user?.name,
+          hostEmail: user?.email
+        },
+        { withCredentials: true }
+      );
+      
+      toast.success("Workspace published successfully!");
+      router.push("/studios");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to publish workspace.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (!user) return null;
 
   return (
     <main className="min-h-screen bg-base-100 py-10 px-4 lg:px-8">
@@ -69,69 +121,74 @@ export default function AddStudio() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-base-300/50 p-6 rounded-xl border border-base-300">
             <div className="form-control w-full">
               <label className="label"><span className="label-text text-gray-400">Host Name (Read-only)</span></label>
-              <input type="text" value="Alex Rivera" readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
+              <input type="text" value={user.name} readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
             </div>
             <div className="form-control w-full">
               <label className="label"><span className="label-text text-gray-400">Host Email (Read-only)</span></label>
-              <input type="email" value="alex.rivera@studiospace.io" readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
+              <input type="email" value={user.email} readOnly className="input input-bordered w-full bg-base-300 text-gray-500 cursor-not-allowed" />
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="form-control w-full">
-              <label className="label"><span className="label-text font-medium">Workspace Title *</span></label>
+              <label className="label"><span className="label-text font-medium text-white">Workspace Title *</span></label>
               <input type="text" name="title" value={formData.title} onChange={handleInputChange} placeholder="e.g. Neon Vault 4K Cinema Soundstage" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-control w-full">
-                <label className="label"><span className="label-text font-medium">Category *</span></label>
+                <label className="label"><span className="label-text font-medium text-white">Category *</span></label>
                 <select name="category" value={formData.category} onChange={handleInputChange} className="select select-bordered w-full bg-base-300 focus:border-warning" required>
                   <option value="" disabled>Select a category</option>
                   <option value="Photo Studio">Photo Studio</option>
                   <option value="Film Stage">Film Stage</option>
                   <option value="Podcast Lounge">Podcast Lounge</option>
                   <option value="Music Suite">Music Suite</option>
-                  <option value="Art Workshop">Art Workshop</option>
+                  <option value="Workshop">Workshop</option>
                 </select>
               </div>
 
               <div className="form-control w-full">
-                <label className="label"><span className="label-text font-medium">Location / Address *</span></label>
+                <label className="label"><span className="label-text font-medium text-white">Location / Address *</span></label>
                 <input type="text" name="location" value={formData.location} onChange={handleInputChange} placeholder="Downtown Los Angeles, CA" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="form-control w-full">
-                <label className="label"><span className="label-text font-medium">Hourly Rate ($) *</span></label>
+                <label className="label"><span className="label-text font-medium text-white">Hourly Rate ($) *</span></label>
                 <input type="number" name="hourlyRate" value={formData.hourlyRate} onChange={handleInputChange} placeholder="135" min="1" className="input input-bordered w-full bg-base-300 focus:border-warning" required />
               </div>
               <div className="form-control w-full">
-                <label className="label"><span className="label-text font-medium">Security Deposit ($)</span></label>
+                <label className="label"><span className="label-text font-medium text-white">Security Deposit ($)</span></label>
                 <input type="number" name="securityDeposit" value={formData.securityDeposit} onChange={handleInputChange} placeholder="150" min="0" className="input input-bordered w-full bg-base-300 focus:border-warning" />
               </div>
               <div className="form-control w-full">
-                <label className="label"><span className="label-text font-medium">Max Capacity</span></label>
+                <label className="label"><span className="label-text font-medium text-white">Max Capacity</span></label>
                 <input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} placeholder="20" min="1" className="input input-bordered w-full bg-base-300 focus:border-warning" />
               </div>
             </div>
 
             <div className="form-control w-full">
-              <label className="label"><span className="label-text font-medium">Workspace Image (Required)</span></label>
-              <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-base-300 border-dashed rounded-xl cursor-pointer bg-base-300 hover:bg-base-300/80 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-400"><span className="font-semibold text-warning">Click to upload</span> or drag and drop</p>
-                  </div>
-                  <input type="file" className="hidden" accept="image/*" />
-                </label>
-              </div>
+              <label className="label">
+                <span className="label-text font-medium text-white">Workspace Image *</span>
+                <span className="label-text-alt text-gray-400">Upload an image from your computer (Max 5MB)</span>
+              </label>
+              <input type="file" accept="image/png, image/jpeg, image/webp" onChange={handleImageUpload} className="file-input file-input-bordered w-full bg-base-300 focus:border-warning" required />
+              
+              {formData.image && (
+                <div className="mt-4 w-full h-48 rounded-xl overflow-hidden border border-base-300 relative bg-base-300">
+                  <img 
+                    src={formData.image} 
+                    alt="Preview" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="form-control w-full">
-              <label className="label"><span className="label-text font-medium">Amenities List</span></label>
+              <label className="label"><span className="label-text font-medium text-white">Amenities List</span></label>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-base-300 rounded-xl border border-base-300">
                 {amenitiesList.map((amenity) => (
                   <label key={amenity} className="cursor-pointer label justify-start gap-3 p-1">
@@ -143,14 +200,14 @@ export default function AddStudio() {
             </div>
 
             <div className="form-control w-full">
-              <label className="label"><span className="label-text font-medium">Detailed Overview</span></label>
+              <label className="label"><span className="label-text font-medium text-white">Detailed Overview</span></label>
               <textarea name="overview" value={formData.overview} onChange={handleInputChange} className="textarea textarea-bordered h-32 bg-base-300 focus:border-warning" placeholder="Describe your studio space, lighting setups, rules, and unique features..."></textarea>
             </div>
           </div>
 
           <div className="flex justify-end pt-4 border-t border-base-300">
-            <button type="submit" className="btn btn-warning btn-lg font-bold px-10">
-              Publish Workspace
+            <button type="submit" disabled={isLoading} className="btn btn-warning btn-lg font-bold px-10 text-[#1B1B1B]">
+              {isLoading ? "Publishing..." : "Publish Workspace"}
             </button>
           </div>
         </form>

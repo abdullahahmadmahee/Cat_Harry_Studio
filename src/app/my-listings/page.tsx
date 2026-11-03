@@ -1,36 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Edit, Trash2, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Edit, Trash2, MapPin, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 import EmptyState from "@/components/shared/EmptyState";
 
 export default function MyListings() {
-  const [listings, setListings] = useState([
-    {
-      _id: "1",
-      title: "Neon Vault 4K Cinema Soundstage",
-      category: "Film Stage",
-      hourlyRate: 135,
-      location: "Downtown Los Angeles, CA",
-      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop"
-    }
-  ]);
+  const router = useRouter();
+  const [listings, setListings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const confirmDelete = () => {
-    setListings(listings.filter(item => item._id !== deleteId));
-    setDeleteId(null);
-    toast.success("Studio deleted successfully!");
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    const parsedUser = JSON.parse(storedUser);
+
+    const fetchListings = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/studios/host/${parsedUser.email}`, {
+          withCredentials: true
+        });
+        setListings(response.data);
+      } catch (error) {
+        console.error("Failed to fetch listings", error);
+        toast.error("Failed to load your listings.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, [router]);
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/studios/${deleteId}`, {
+        withCredentials: true
+      });
+      setListings(listings.filter(item => item._id !== deleteId));
+      setDeleteId(null);
+      toast.success("Workspace deleted successfully!");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete workspace.");
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center bg-base-100">
+        <Loader2 className="w-12 h-12 animate-spin text-warning" />
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-[80vh] bg-base-100 py-10 px-4 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">My Studio Listings</h1>
-          <Link href="/add-studio" className="btn btn-warning">Add New</Link>
+          <Link href="/add-studio" className="btn btn-warning text-[#1B1B1B] font-bold">Add New</Link>
         </div>
 
         {listings.length === 0 ? (
@@ -43,11 +80,11 @@ export default function MyListings() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {listings.map(studio => (
-              <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300">
+              <div key={studio._id} className="card bg-base-200 shadow-xl border border-base-300 hover:border-warning/50 transition-colors">
                 <figure className="h-48 relative">
                   <img src={studio.image} alt={studio.title} className="w-full h-full object-cover" />
                   <div className="absolute top-2 left-2">
-                    <span className="badge badge-warning">{studio.category}</span>
+                    <span className="badge badge-warning text-[#1B1B1B] font-medium">{studio.category}</span>
                   </div>
                 </figure>
                 <div className="card-body p-5">

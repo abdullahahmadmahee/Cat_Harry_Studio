@@ -1,15 +1,78 @@
 "use client";
 
-import { BarChart3, Building2, CalendarCheck, Wallet, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { BarChart3, Building2, CalendarCheck, Wallet, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
-  const stats = [
-    { id: 1, title: "Total Bookings", value: "12", icon: <CalendarCheck className="w-6 h-6 text-warning" /> },
-    { id: 2, title: "Active Listings", value: "3", icon: <Building2 className="w-6 h-6 text-warning" /> },
-    { id: 3, title: "Total Earnings", value: "$4,250", icon: <Wallet className="w-6 h-6 text-warning" /> },
-    { id: 4, title: "Profile Views", value: "840", icon: <BarChart3 className="w-6 h-6 text-warning" /> },
+  const router = useRouter();
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [dashboardData, setDashboardData] = useState({
+    totalBookings: 0,
+    activeListings: 0,
+  });
+  
+  const [recentBookings, setRecentBookings] = useState<any[]>([]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+    
+    const parsedUser = JSON.parse(storedUser);
+    setUser(parsedUser);
+
+    const fetchDashboardData = async () => {
+      try {
+        const [listingsRes, bookingsRes] = await Promise.all([
+          axios.get(`http://localhost:5000/api/studios/host/${parsedUser.email}`, { withCredentials: true }),
+          axios.get(`http://localhost:5000/api/bookings/user/${parsedUser.email}`, { withCredentials: true })
+        ]);
+
+        setDashboardData({
+          activeListings: listingsRes.data.length,
+          totalBookings: bookingsRes.data.length,
+        });
+
+        setRecentBookings(bookingsRes.data.slice(0, 3));
+      } catch (error) {
+        toast.error("Failed to load dashboard data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center bg-base-100">
+        <Loader2 className="w-12 h-12 animate-spin text-warning" />
+      </div>
+    );
+  }
+
+  const statCards = [
+    { id: 1, title: "Total Bookings", value: dashboardData.totalBookings, icon: <CalendarCheck className="w-6 h-6 text-warning" /> },
+    { id: 2, title: "Active Listings", value: dashboardData.activeListings, icon: <Building2 className="w-6 h-6 text-warning" /> },
+    { id: 3, title: "Total Earnings", value: "$0", icon: <Wallet className="w-6 h-6 text-warning" /> },
+    { id: 4, title: "Profile Views", value: "0", icon: <BarChart3 className="w-6 h-6 text-warning" /> },
   ];
+
+  const getStatusColor = (status: string) => {
+    if (status === "Pending") return "badge-warning text-[#1B1B1B]";
+    if (status === "Confirmed") return "badge-success bg-[#1B1B1B] text-success border-success";
+    if (status === "Cancelled") return "badge-error";
+    return "badge-info";
+  };
 
   return (
     <main className="min-h-[80vh] bg-base-100 py-10 px-4 lg:px-8">
@@ -17,15 +80,15 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Creator Dashboard</h1>
-            <p className="text-gray-400 mt-1">Welcome back, Alex. Here is your platform overview.</p>
+            <p className="text-gray-400 mt-1">Welcome back, {user?.name.split(" ")[0] || "Creator"}. Here is your platform overview.</p>
           </div>
-          <Link href="/add-studio" className="btn btn-warning font-bold">
+          <Link href="/add-studio" className="btn btn-warning font-bold text-[#1B1B1B]">
             + Add New Studio
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {stats.map((stat) => (
+          {statCards.map((stat) => (
             <div key={stat.id} className="card bg-base-200 border border-base-300 shadow-xl hover:-translate-y-1 transition-transform duration-300">
               <div className="card-body p-6 flex flex-row items-center justify-between">
                 <div>
@@ -47,20 +110,19 @@ export default function Dashboard() {
                 <h2 className="card-title text-xl text-white">Recent Bookings</h2>
               </div>
               <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between p-4 bg-base-300 rounded-xl border border-base-100">
-                  <div>
-                    <p className="font-bold text-white">Neon Vault 4K Cinema</p>
-                    <p className="text-sm text-gray-400 mt-1">Nov 15, 2026 • 10:00 AM</p>
-                  </div>
-                  <span className="badge badge-warning font-semibold">Pending</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-base-300 rounded-xl border border-base-100">
-                  <div>
-                    <p className="font-bold text-white">The Prism Cyc Studio</p>
-                    <p className="text-sm text-gray-400 mt-1">Oct 20, 2026 • 01:00 PM</p>
-                  </div>
-                  <span className="badge badge-success font-semibold text-[#1B1B1B]">Confirmed</span>
-                </div>
+                {recentBookings.length === 0 ? (
+                  <p className="text-gray-400 text-center py-6">No recent bookings found.</p>
+                ) : (
+                  recentBookings.map((booking) => (
+                    <div key={booking._id} className="flex items-center justify-between p-4 bg-base-300 rounded-xl border border-base-100">
+                      <div className="w-2/3">
+                        <p className="font-bold text-white line-clamp-1">{booking.studioId?.title || "Unknown Workspace"}</p>
+                        <p className="text-sm text-gray-400 mt-1">{booking.date} • {booking.startTime}</p>
+                      </div>
+                      <span className={`badge ${getStatusColor(booking.status)} font-semibold`}>{booking.status}</span>
+                    </div>
+                  ))
+                )}
               </div>
               <Link href="/my-bookings" className="btn btn-outline btn-warning w-full mt-6">View All Bookings</Link>
             </div>

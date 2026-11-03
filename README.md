@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudioSpace 🎬
 
-## Getting Started
+StudioSpace is a premium peer-to-peer workspace sharing marketplace. It connects filmmakers, photographers, and audio engineers with world-class production facilities, allowing them to discover, book, and manage creative spaces.
 
-First, run the development server:
+## 🚀 Live Demo
+Frontend Live Link: [Insert Your Vercel Link Here]
+Backend API Link: [Insert Your Backend Link Here]
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠️ Technology Stack
+* Frontend: Next.js, React, TypeScript, Tailwind CSS v4, DaisyUI, Axios
+* Backend: Node.js, Express.js, TypeScript, Mongoose
+* Database: MongoDB
+* Authentication: JWT (JSON Web Tokens) with HTTPOnly Cookies
+* Additional Libraries: Swiper.js (Carousels), Lucide React (Icons), html2pdf.js (Invoice Generation), React Hot Toast (Notifications)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
+* Cinematic UI/UX: A fully responsive, premium dark-themed interface with dynamic light/dark mode toggling (preserving Hero Banner contrast).
+* Secure Authentication: Robust JWT-based login and registration system utilizing HTTPOnly cookies for enhanced security.
+* Workspace Management: Users can instantly transition to hosts by publishing their own studios. Includes Base64 image uploading and full CRUD (Create, Read, Update, Delete) capabilities for listings.
+* Live Search & Filtering: Dynamic search functionality on the Explore Studios page to find workspaces by title or category.
+* Double-Booking Prevention: The backend actively intercepts and blocks reservation attempts for time slots that overlap with existing confirmed bookings.
+* Automated PDF Invoicing: Users can instantly generate and download a beautifully styled PDF receipt for any confirmed booking using `html2pdf.js`.
+* Creator Dashboard: A centralized hub displaying live statistics, recent bookings, and quick actions for both guests and hosts.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Local Installation Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Clone the repositories:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone [https://github.com/your-username/studio-space-frontend.git](https://github.com/your-username/studio-space-frontend.git)
+git clone [https://github.com/your-username/studio-space-backend.git](https://github.com/your-username/studio-space-backend.git)
