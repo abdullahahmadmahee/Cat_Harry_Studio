@@ -25,7 +25,7 @@ export default function MyBookings() {
 
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app//api/bookings/user/${parsedUser.email}`, {
+        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app/api/bookings/user/${parsedUser.email}`, {
           withCredentials: true
         });
         setBookings(response.data);
