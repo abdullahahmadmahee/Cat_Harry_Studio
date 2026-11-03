@@ -80,7 +80,7 @@ export default function AddStudio() {
     try {
       setIsLoading(true);
       await axios.post(
-        "http://localhost:5000/api/studios",
+        "https://cat-harry-studio-backend.vercel.app/api/studios",
         {
           ...formData,
           hourlyRate: Number(formData.hourlyRate),

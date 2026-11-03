@@ -49,7 +49,7 @@ export default function EditStudio({ params }: EditStudioProps) {
 
     const fetchStudio = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/studios/${resolvedParams.id}`);
+        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app/api/studios/${resolvedParams.id}`);
         const studio = response.data;
         setFormData({
           title: studio.title,
@@ -105,7 +105,7 @@ export default function EditStudio({ params }: EditStudioProps) {
     try {
       setIsSaving(true);
       await axios.put(
-        `http://localhost:5000/api/studios/${resolvedParams.id}`,
+        `https://cat-harry-studio-backend.vercel.app/api/studios/${resolvedParams.id}`,
         {
           ...formData,
           hourlyRate: Number(formData.hourlyRate),

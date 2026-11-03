@@ -41,7 +41,7 @@ export default function Register() {
     try {
       setIsLoading(true);
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://cat-harry-studio-backend.vercel.app/api/auth/register",
         { name, email, password },
         { withCredentials: true }
       );

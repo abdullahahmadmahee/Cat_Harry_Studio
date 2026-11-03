@@ -23,7 +23,7 @@ export default function Login() {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://cat-harry-studio-backend.vercel.app/api/auth/login",
         { email, password },
         { withCredentials: true }
       );

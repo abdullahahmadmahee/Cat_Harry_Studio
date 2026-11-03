@@ -27,8 +27,8 @@ export default function ExploreStudios() {
     try {
       setIsLoading(true);
       const url = searchQuery 
-        ? `http://localhost:5000/api/studios?search=${encodeURIComponent(searchQuery)}`
-        : "http://localhost:5000/api/studios";
+        ? `https://cat-harry-studio-backend.vercel.app/api/studios?search=${encodeURIComponent(searchQuery)}`
+        : "https://cat-harry-studio-backend.vercel.app/api/studios";
       
       const response = await axios.get(url);
       setStudios(response.data);

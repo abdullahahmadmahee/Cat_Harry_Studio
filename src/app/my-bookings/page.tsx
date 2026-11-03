@@ -25,7 +25,7 @@ export default function MyBookings() {
 
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/bookings/user/${parsedUser.email}`, {
+        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app//api/bookings/user/${parsedUser.email}`, {
           withCredentials: true
         });
         setBookings(response.data);
@@ -42,7 +42,7 @@ export default function MyBookings() {
 
   const handleCancel = async (id: string) => {
     try {
-      await axios.patch(`http://localhost:5000/api/bookings/${id}/cancel`, {}, {
+      await axios.patch(`https://cat-harry-studio-backend.vercel.app/api/bookings/${id}/cancel`, {}, {
         withCredentials: true
       });
       

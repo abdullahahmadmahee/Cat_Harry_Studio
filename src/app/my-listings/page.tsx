@@ -25,7 +25,7 @@ export default function MyListings() {
 
     const fetchListings = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/studios/host/${parsedUser.email}`, {
+        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app/api/studios/host/${parsedUser.email}`, {
           withCredentials: true
         });
         setListings(response.data);
@@ -43,7 +43,7 @@ export default function MyListings() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await axios.delete(`http://localhost:5000/api/studios/${deleteId}`, {
+      await axios.delete(`https://cat-harry-studio-backend.vercel.app/api/studios/${deleteId}`, {
         withCredentials: true
       });
       setListings(listings.filter(item => item._id !== deleteId));

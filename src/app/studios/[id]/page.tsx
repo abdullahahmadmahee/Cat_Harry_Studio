@@ -34,7 +34,7 @@ export default function StudioDetails({ params }: StudioDetailsProps) {
 
     const fetchStudio = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/studios/${resolvedParams.id}`);
+        const response = await axios.get(`https://cat-harry-studio-backend.vercel.app/api/studios/${resolvedParams.id}`);
         setStudio(response.data);
       } catch (error) {
         toast.error("Failed to load studio details.");
@@ -80,7 +80,7 @@ export default function StudioDetails({ params }: StudioDetailsProps) {
     try {
       setIsBooking(true);
       await axios.post(
-        "http://localhost:5000/api/bookings",
+        "https://cat-harry-studio-backend.vercel.app/api/bookings",
         {
           studioId: studio._id,
           userEmail: user.email,

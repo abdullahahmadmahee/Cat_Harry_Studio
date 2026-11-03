@@ -33,7 +33,7 @@ function NavbarContent() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "https://cat-harry-studio-backend.vercel.app/api/auth/logout",
         {},
         { withCredentials: true }
       );

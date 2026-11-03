@@ -32,8 +32,8 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
       try {
         const [listingsRes, bookingsRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/studios/host/${parsedUser.email}`, { withCredentials: true }),
-          axios.get(`http://localhost:5000/api/bookings/user/${parsedUser.email}`, { withCredentials: true })
+          axios.get(`https://cat-harry-studio-backend.vercel.app/api/studios/host/${parsedUser.email}`, { withCredentials: true }),
+          axios.get(`https://cat-harry-studio-backend.vercel.app/api/bookings/user/${parsedUser.email}`, { withCredentials: true })
         ]);
 
         setDashboardData({
