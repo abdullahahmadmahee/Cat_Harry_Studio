@@ -20,10 +20,3 @@ Frontend Live Link: https://cat-harry-studio.vercel.app/
 * Double-Booking Prevention: The backend actively intercepts and blocks reservation attempts for time slots that overlap with existing confirmed bookings.
 * Automated PDF Invoicing: Users can instantly generate and download a beautifully styled PDF receipt for any confirmed booking using `html2pdf.js`.
 * Creator Dashboard: A centralized hub displaying live statistics, recent bookings, and quick actions for both guests and hosts.
-
-## 📦 Local Installation Guide
-
-1. Clone the repositories:
-
-git clone [https://github.com/your-username/studio-space-frontend.git](https://github.com/your-username/studio-space-frontend.git)
-git clone [https://github.com/your-username/studio-space-backend.git](https://github.com/your-username/studio-space-backend.git)
