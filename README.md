@@ -3,8 +3,7 @@
 StudioSpace is a premium peer-to-peer workspace sharing marketplace. It connects filmmakers, photographers, and audio engineers with world-class production facilities, allowing them to discover, book, and manage creative spaces.
 
 ## 🚀 Live Demo
-Frontend Live Link: [Insert Your Vercel Link Here]
-Backend API Link: [Insert Your Backend Link Here]
+Frontend Live Link: https://cat-harry-studio.vercel.app/
 
 ## 🛠️ Technology Stack
 * Frontend: Next.js, React, TypeScript, Tailwind CSS v4, DaisyUI, Axios
