@@ -1,7 +1,20 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Aperture } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    toast.success("Subscribed to the StudioSpace newsletter!");
+    setEmail("");
+  };
+
   return (
     <footer className="bg-base-200 text-base-content mt-auto">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
@@ -36,9 +49,16 @@ export default function Footer() {
           <div className="flex flex-col gap-4">
             <h6 className="font-bold uppercase tracking-wider text-sm text-white mb-2">Newsletter</h6> 
             <p className="text-sm text-gray-400 mb-2">Join our creator network for the latest updates.</p>
-            <form className="flex w-full">
-              <input type="email" placeholder="email@site.com" className="input input-bordered w-full rounded-r-none bg-base-100 focus:outline-none focus:border-warning" required /> 
-              <button type="submit" className="btn btn-warning rounded-l-none font-bold">Subscribe</button>
+            <form onSubmit={handleSubscribe} className="flex w-full">
+              <input 
+                type="email" 
+                placeholder="email@site.com" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input input-bordered w-full rounded-r-none bg-base-100 focus:outline-none focus:border-warning" 
+                required 
+              /> 
+              <button type="submit" className="btn btn-warning rounded-l-none font-bold text-[#1B1B1B]">Subscribe</button>
             </form>
           </div>
 

@@ -120,6 +120,9 @@ function NavbarContent() {
               <li>
                 <Link href="/my-bookings" className={pathname === "/my-bookings" ? "active bg-base-300" : ""}>My Bookings</Link>
               </li>
+              <li>
+                <Link href="/wishlist" className={pathname === "/wishlist" ? "active bg-base-300" : ""}>My Wishlist</Link>
+              </li>
               <li className="mt-2 border-t border-base-300 pt-2">
                 <button onClick={handleLogout} className="text-error hover:bg-error/10">Logout</button>
               </li>

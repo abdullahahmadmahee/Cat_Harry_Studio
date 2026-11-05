@@ -32,6 +32,11 @@ export default function StudioDetails({ params }: StudioDetailsProps) {
       setUser(JSON.parse(storedUser));
     }
 
+    const currentWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    if (currentWishlist.includes(resolvedParams.id)) {
+      setIsSaved(true);
+    }
+
     const fetchStudio = async () => {
       try {
         const response = await axios.get(`https://cat-harry-studio-backend.vercel.app/api/studios/${resolvedParams.id}`);
@@ -48,9 +53,19 @@ export default function StudioDetails({ params }: StudioDetailsProps) {
   }, [resolvedParams.id, router]);
 
   const handleSave = () => {
+    const currentWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    let newWishlist;
+    
+    if (isSaved) {
+      newWishlist = currentWishlist.filter((id: string) => id !== studio._id);
+      toast.success("Removed from your wishlist!");
+    } else {
+      newWishlist = [...currentWishlist, studio._id];
+      toast.success("Added to your wishlist!");
+    }
+    
+    localStorage.setItem("wishlist", JSON.stringify(newWishlist));
     setIsSaved(!isSaved);
-    if (!isSaved) toast.success("Added to your wishlist!");
-    else toast.success("Removed from your wishlist!");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
